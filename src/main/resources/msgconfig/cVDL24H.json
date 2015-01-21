@@ -1,0 +1,65 @@
+[
+  {
+    "records" : ["00", "10"],
+    "cells"   : [2, 15, 8, 10, 11, 12, 20, 21, 22, 23],
+    "factors" : [0, 1],
+    "cases"   : [
+      {
+        "value" : 91,
+        "sql"   : "update epvsl set impvoy='%s' berpln='%s', bercodepln='%s' where vslname='%s' and flag=1",
+        "vs"    : [
+          5, 6, 8, 4
+        ]
+      },
+      {
+        "value" : 92,
+        "sql"   : "update epvsl set expvoy='%s', unberpln='%s', flag=2 where vslname='%s' and flag=1",
+        "vs"    : [
+          5, 7, 4
+        ]
+      },
+      {
+        "value" : 93,
+        "sql"   : "update epvsl set unberpln='%s', flag=3 where vslname='%s' and flag=1",
+        "vs"    : [
+          6, 4
+        ]
+      },
+      {
+        "value" : 93,
+        "sql"   : "insert into epvsl(vslid, vslnamecn, vslname, impvoy, berpln, flag, canceled) values('%s', '%s', '%s', '%s', '%s', %s, %s)",
+        "vs"    : [
+          2, 3, 4, 5, 7, 1, 0
+        ]
+      },
+      {
+        "value" : 52,
+        "sql"   : "update epvsl set flag=2, canceled=5 where vslname=%s and canceled=9",
+        "vs"    : [
+          4
+        ]
+      }
+    ,
+      {
+        "value" : 51,
+        "sql"   : "update epvsl set flag=2, canceled=5 where vslname=%s and canceled=9",
+        "vs"    : [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "records" : ["10"],
+    "cells"   : [3, 18],
+    "factors" : [],
+    "cases"   : [
+      {
+        "sql"   : "insert into epvslmsg(vslname, content) values('%s', '%s')",
+        "vs"    : [
+          0, 1
+        ]
+      }
+    ]
+  }
+]

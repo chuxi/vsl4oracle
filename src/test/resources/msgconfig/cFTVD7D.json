@@ -1,0 +1,43 @@
+[
+  {
+    "records" : ["00", "10"],
+    "cells"   : [2, 13, 8, 9, 10, 11, 18, 19, 20],
+    "factors" : [0, 1],
+    "cases"   : [
+      {
+        "value" : 91,
+        "sql"   : "insert into epvsl(vslid, vslnamecn, vslname, impvoy, berpln, port, flag, canceled) values('%s', '%s', '%s', '%s', '%s', '%s', %s, %s)",
+        "vs"    : [
+          2, 3, 4, 5, 6, 8, 1, 0
+        ]
+      },
+      {
+        "value" : 92,
+        "sql"   : "update epvsl set expvoy='%s', unberpln='%s', flag=2 where vslname='%s' and flag=1",
+        "vs"    : [
+          5, 7, 4
+        ]
+      },
+      {
+        "value" : 31,
+        "sql"   : "update epvsl set flag=2, canceled=3 where vslname='%s' and flag=1 and canceled=9",
+        "vs"    : [
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "records" : ["10"],
+    "cells"   : [3, 18],
+    "factors" : [],
+    "cases"   : [
+      {
+        "sql"   : "insert into epvslmsg(vslname, content) values('%s', '%s')",
+        "vs"    : [
+          0, 1
+        ]
+      }
+    ]
+  }
+]
