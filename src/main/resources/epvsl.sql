@@ -16,21 +16,23 @@ drop table epvsl;
 create table epvsl(
 	id number primary key not null,
     vslid varchar2(20) not null,
-    vslname varchar2(50) not null,
-    vslnamecn varchar2(50),
+    vslname varchar2(35) not null,
+    vslnamecn varchar2(35),
     expvoy varchar2(10),
     impvoy varchar2(10),
-    berpln date,
-    unberpln date,
+    berpln varchar2(20),
+    unberpln varchar2(20),
     port varchar2(10),
     berthcode varchar2(10),
-    beract date,
-    unberact date
+    beract varchar2(20),
+    unberact varchar2(20),
+	flag number not null,
+	canceled number not null
 );
 
 create table epvslmsg(
 	id number primary key not null,
-	vsl_id number references epvsl(id),
+	vslname varchar2(35) not null,
 	content clob
 );
 
@@ -54,4 +56,3 @@ begin
 select epvslmsg_sq.nextval into :new.id from dual;
 end;
 /
-
