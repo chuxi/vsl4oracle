@@ -6,7 +6,7 @@
     "cases"   : [
       {
         "value" : 91,
-        "sql"   : "update epvsl set impvoy='%s' berpln='%s', bercodepln='%s' where vslname='%s' and flag=1",
+        "sql"   : "update epvsl set impvoy='%s', berpln='%s', berthcode='%s' where vslname='%s' and flag=1",
         "vs"    : [
           5, 6, 8, 4
         ]
@@ -51,7 +51,7 @@
   },
   {
     "records" : ["10"],
-    "cells"   : [3, 18],
+    "cells"   : [3, 20],
     "factors" : [],
     "cases"   : [
       {

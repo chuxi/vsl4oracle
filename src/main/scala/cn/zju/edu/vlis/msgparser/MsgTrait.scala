@@ -1,6 +1,7 @@
 package cn.zju.edu.vlis.msgparser
 
 import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.catalyst.expressions.Row
 
 /**
  * Created by king on 1/5/15.
@@ -21,6 +22,6 @@ trait MsgTrait {
   /**
    * based on the config json file, store data
    */
-  def store(mc: MsgConf)
+  def store(rdd: Option[Array[Row]], mc: MsgConf)
 
 }

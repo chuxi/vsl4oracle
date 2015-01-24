@@ -3,13 +3,13 @@ package bigdata
 import java.io.File
 import java.util.Properties
 
-import cn.zju.edu.vlis.MsgManager
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import oracle.jdbc.driver.OracleDriver
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.catalyst.expressions.Row
 import org.apache.spark.sql.catalyst.types.{StringType, StructField, StructType}
+import org.apache.spark.streaming.StreamingContext
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
@@ -27,10 +27,11 @@ class MyTest extends FunSuite with BeforeAndAfterAll {
   var sparkConf: SparkConf = null
   var sc: SparkContext = null
   var sqlContext: SQLContext = null
+  var ssc: StreamingContext = null
 
 
   override def beforeAll() {
-    sparkConf = new SparkConf().setAppName("MsgConsumer").setMaster("local[2]")
+    sparkConf = new SparkConf().setAppName("MsgConsumer").setMaster("local[4]")
     sc = new SparkContext(sparkConf)
     sqlContext = new org.apache.spark.sql.SQLContext(sc)
   }
@@ -99,19 +100,6 @@ class MyTest extends FunSuite with BeforeAndAfterAll {
 
   }
 
-  test("test MsgManager processMsg") {
-    val msgs = getMsgList.groupBy(s => s.substring(3, 9)).filter(m => Set("FTVD7D", "VDL24H").contains(m._1)).toMap
-
-    val manager = MsgManager(sqlContext)
-
-    msgs.foreach{
-      case (tp, ms) => manager.processMsg(tp, ms)
-    }
-
-  }
-
-
-
   test("read message json config file") {
 
     val mp = new ObjectMapper
@@ -166,6 +154,10 @@ class MyTest extends FunSuite with BeforeAndAfterAll {
 
     println(connpro.getProperty("url"))
     conn.close()
+  }
+
+  test("spark conf study") {
+    sparkConf.getAll.foreach(println(_))
   }
 
 

@@ -29,22 +29,7 @@ class MsgCommon(helper: MsgOracleHelper, f: String) extends MsgTrait{
 
   val ca = root.filter(!_.factors.isEmpty).map(_.cases).flatten.groupBy(_.value).toMap
 
-  var rdd: Option[Array[Row]] = None
   val tbname: String = "eptb"
-
-
-  def process(msgs: List[String], sqlContext: SQLContext): Unit = {
-    root.foreach{mc =>
-      rdd = None
-      this.parse(mc, msgs, sqlContext)
-      if (rdd.isDefined) {
-        this.store(mc)
-      }
-    }
-  }
-
-
-
 
   /**
    * parse a message RDD, extract the required data
@@ -53,18 +38,23 @@ class MsgCommon(helper: MsgOracleHelper, f: String) extends MsgTrait{
   override def parse(mc: MsgConf, msgs: List[String], sqlContext: SQLContext): Unit = {
     val t = msgs.map(s => s.split("'").filter(m => mc.records.contains(m.take(2))).toList.map(_.split(":").toList.tail).flatten :+ s.replaceAll("'", "''"))
 
+//    t.foreach(println)
     // 生成 Schema
     val schema = StructType(Range(0, t(0).length).map("q"+_).map(fieldName => StructField(fieldName, StringType, true)))
-
+//    schema.printTreeString()
     // 生成 RDD Rows
+
+    println(sqlContext.sparkContext)
+
     val tRDD = sqlContext.sparkContext.parallelize(t).map(p => Row(p: _*))
-//      tRDD.collect().foreach(println)
+
+    tRDD.collect().foreach(println)
 
     val dataRDD = sqlContext.applySchema(tRDD, schema)
 
     dataRDD.registerTempTable(tbname)
 
-    rdd = Some(sqlContext.sql("select " + mc.cells.map("q"+_).mkString(",") + s" from $tbname").collect())
+    Some(sqlContext.sql("select " + mc.cells.map("q"+_).mkString(",") + s" from $tbname").collect())
 
 
 //      result.collect().foreach(println)
@@ -74,7 +64,7 @@ class MsgCommon(helper: MsgOracleHelper, f: String) extends MsgTrait{
   /**
    * based on the config json file, store data
    */
-  override def store(mc: MsgConf): Unit = {
+  override def store(rdd: Option[Array[Row]], mc: MsgConf): Unit = {
     rdd.get.foreach{ r =>
       val c = mc.factors.isEmpty match {
         case true =>
