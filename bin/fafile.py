@@ -9,14 +9,14 @@ __author__ = 'king'
 
 from fabric.api import *
 
-env.user = 'vlis'
-env.password = 'vlis@zju'
+env.user = 'hadoop'
+env.password = 'hadoop'
 
 env.roledefs = {
-    'test': ['10.214.20.118']
+    'test': ['10.214.208.13']
 }
 
-env.spark = 'node1'
+env.spark = 'node3'
 
 
 
