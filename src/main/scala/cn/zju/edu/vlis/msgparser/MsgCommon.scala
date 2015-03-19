@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.catalyst.expressions.Row
-import org.apache.spark.sql.catalyst.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
 /**
  * Created by king on 1/5/15.
@@ -50,7 +50,7 @@ class MsgCommon(helper: MsgOracleHelper, f: String) extends MsgTrait{
 
     tRDD.collect().foreach(println)
 
-    val dataRDD = sqlContext.applySchema(tRDD, schema)
+    val dataRDD = sqlContext.createDataFrame(tRDD, schema)
 
     dataRDD.registerTempTable(tbname)
 

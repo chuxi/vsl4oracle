@@ -5,10 +5,11 @@ import java.util.Properties
 
 import cn.zju.edu.vlis.msgparser.{MsgVDL24H, MsgCommon, MsgFTVD7D}
 import cn.zju.edu.vlis.msgstore.MsgOracleHelper
+import cn.zju.edu.vlis.util.StreamingExamples
 import org.apache.log4j.PropertyConfigurator
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.catalyst.expressions.Row
-import org.apache.spark.sql.catalyst.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
@@ -33,17 +34,18 @@ object KafkaMsgConsumer {
 
     val tbname: String = "eptb"
 
-    val pro = new Properties()
-    pro.put("log4j.rootLogger", "ERROR, console")
-    pro.put("log4j.appender.console", "org.apache.log4j.ConsoleAppender")
-    pro.put("log4j.appender.console.target", "System.err")
-    pro.put("log4j.appender.console.layout", "org.apache.log4j.PatternLayout")
-    pro.put("log4j.appender.console.layout.ConversionPattern",
-      "%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n")
-    PropertyConfigurator.configure(pro)
+//    val pro = new Properties()
+//    pro.put("log4j.rootLogger", "ERROR, console")
+//    pro.put("log4j.appender.console", "org.apache.log4j.ConsoleAppender")
+//    pro.put("log4j.appender.console.target", "System.err")
+//    pro.put("log4j.appender.console.layout", "org.apache.log4j.PatternLayout")
+//    pro.put("log4j.appender.console.layout.ConversionPattern",
+//      "%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n")
+//    PropertyConfigurator.configure(pro)
 
+    StreamingExamples.setStreamingLogLevels()
 
-    val sparkConf = new SparkConf().setAppName("MsgConsumer")
+    val sparkConf = new SparkConf().setAppName("MsgConsumer").setMaster("local[*]")
     val sc = new SparkContext(sparkConf)
     val sqlContext = new org.apache.spark.sql.SQLContext(sc)
     val ssc = new StreamingContext(sc, Seconds(2))
@@ -62,7 +64,7 @@ object KafkaMsgConsumer {
           val schema = StructType(Range(0, tRDD.first().length).map("q"+_).map(fieldName => StructField(fieldName, StringType, true)))
           //        schema.printTreeString()
 
-          val dataRDD = sqlContext.applySchema(tRDD, schema)
+          val dataRDD = sqlContext.createDataFrame(tRDD, schema)
 
           dataRDD.registerTempTable(tbname)
 
@@ -83,7 +85,7 @@ object KafkaMsgConsumer {
         process(MsgVDL24H(MsgOracleHelper(connpro)), rdd.filter(s => s.substring(3, 9).equals("VDL24H")))
     }
 
-    println("hello scala")
+//    println("hello scala")
     ssc.start()
     ssc.awaitTermination()
 
